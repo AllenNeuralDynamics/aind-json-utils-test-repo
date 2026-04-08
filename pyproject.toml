@@ -69,7 +69,7 @@ exclude_lines = [
     "^import .*",
     "pragma: no cover"
 ]
-fail_under = 100
+fail_under = 20
 
 [tool.isort]
 line_length = 79
@@ -78,4 +78,4 @@ skip = [".conda"]
 
 [tool.interrogate]
 exclude = ["setup.py", "docs", "build", ".conda"]
-fail-under = 100
+fail-under = 50

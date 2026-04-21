@@ -1,3 +1,5 @@
+"""json utility module"""
+
 import json
 from typing import Dict, Any
 
@@ -27,9 +29,7 @@ def load_json_file(file_path: str) -> Dict[str, Any]:
         return json.load(f)
 
 
-def save_json_file(
-    data: Dict[str, Any], file_path: str, indent: int = 2
-) -> None:
+def save_json_file(data: Dict[str, Any], file_path: str, indent: int = 2) -> None:
     """
     Save a dictionary as a JSON file.
 
@@ -49,7 +49,7 @@ def save_json_file(
 def validate_json_structure(data: Any):
     """
     Validates basic JSON structure.
-    
+
     Parameters
     ----------
     data: Any

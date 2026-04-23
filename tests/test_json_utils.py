@@ -17,7 +17,7 @@ class TestLoadJsonFile(unittest.TestCase):
 
     def test_load_valid_json(self):
         """Test loading a valid JSON file returns the expected dict."""
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f: # noqa
             f.write('{"key": "value", "num": 42}')
             f.flush()
             path = f.name
@@ -34,7 +34,7 @@ class TestLoadJsonFile(unittest.TestCase):
 
     def test_load_invalid_json(self):
         """Test that loading invalid JSON raises JSONDecodeError."""
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f: # noqa
             f.write("{invalid json}")
             f.flush()
             path = f.name

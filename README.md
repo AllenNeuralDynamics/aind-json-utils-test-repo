@@ -1,60 +1,126 @@
-# aind-json-utils-test-repo
+# Issue: Implement JSON Deep Merge Module with Main File Precedence
 
-A small Python utility library for loading, saving, and validating JSON files.
+**Labels:** `interview-exercise` `code-review` `module`
 
-## Features
+---
 
-- **`load_json_file(file_path)`** – Read and parse a JSON file into a Python dictionary.
-- **`save_json_file(data, file_path, indent=2)`** – Write a dictionary to a JSON file with configurable indentation.
-- **`validate_json_structure(data)`** – Verify that data is a dictionary, raising `ValueError` otherwise.
+## Summary
 
-## Installation
+Create a module that merges two JSON files using a precedence-based strategy. A designated `main.json` file acts as the authoritative source — its existing values are never overwritten. A second "incoming" JSON file provides supplemental data that fills in missing keys only.
 
-Create a virtual environment, then install the package from the project root:
+---
 
-```bash
-pip install -e .
+## Requirements
+
+### Input
+- The module accepts two JSON file paths as input.
+- One file is always designated as `main.json` (the primary/authoritative source).
+- The other file is the **incoming** JSON (the secondary/supplemental source).
+
+### Merge Behavior
+
+1. **Top-level keys that exist only in `main.json`** → preserved as-is.
+2. **Top-level keys that exist only in the incoming JSON** → added to the merged result.
+3. **Top-level keys that exist in both files:**
+   - If the value in `main.json` is **already populated** (non-null, non-empty), it takes precedence and must **not** be overwritten.
+   - If the value in `main.json` is `null`, `""`, `{}`, or `[]` (empty/unset), the incoming value may fill it in.
+4. **Nested objects (recursive merge):**
+   - When both files have an object at the same key, the merge should recurse into the nested structure and apply the same precedence rules at every level.
+   - `main.json` values always win at any depth if they are populated.
+5. **Arrays:**
+   - If `main.json` has a non-empty array at a given key, it is preserved entirely (no element-level merge).
+   - If `main.json` has an empty array and the incoming file has a non-empty one, the incoming array is used.
+
+### Output
+- The module returns (or writes) the merged JSON result.
+
+---
+
+## Example
+
+**`main.json`**
+```json
+{
+  "name": "Acme Corp",
+  "address": {
+    "street": "123 Main St",
+    "city": "",
+    "state": "WA"
+  },
+  "tags": ["enterprise"],
+  "metadata": {
+    "created_by": "admin",
+    "notes": null
+  },
+  "contacts": []
+}
 ```
 
-To install with development dependencies:
-
-```bash
-pip install -e . --group dev
+**`incoming.json`**
+```json
+{
+  "name": "Acme Corporation",
+  "address": {
+    "street": "456 Oak Ave",
+    "city": "Redmond",
+    "state": "ME",
+    "zip": "98101"
+  },
+  "tags": ["startup", "west-coast"],
+  "metadata": {
+    "created_by": "import-script",
+    "notes": "Imported from CRM",
+    "source": "crm-v2"
+  },
+  "contacts": [
+    { "email": "info@acme.com" }
+  ],
+  "industry": "Technology"
+}
 ```
 
-> **Note:** The `--group` flag requires pip >= 25.1.
-
-Or, if using `uv`:
-
-```bash
-uv sync
+**Expected merged result:**
+```json
+{
+  "name": "Acme Corp",
+  "address": {
+    "street": "123 Main St",
+    "city": "Seattle",
+    "state": "WA",
+    "zip": "98101"
+  },
+  "tags": ["enterprise"],
+  "metadata": {
+    "created_by": "admin",
+    "notes": "Imported from CRM",
+    "source": "crm-v2"
+  },
+  "contacts": [
+    { "email": "info@acme.com" }
+  ],
+  "industry": "Technology"
+}
 ```
+---
 
-## Usage
+## Acceptance Criteria
 
-```python
-from aind_json_utils_test_repo.json_utils import (
-    load_json_file,
-    save_json_file,
-    validate_json_structure,
-)
+- [ ] Module reads two JSON files from disk (or accepts two parsed objects).
+- [ ] Merge is recursive for nested objects.
+- [ ] `main.json` populated values are never overwritten at any depth.
+- [ ] Empty/null values in `main.json` are filled by incoming data.
+- [ ] Keys unique to either file appear in the final output.
+- [ ] Non-empty arrays in `main.json` are preserved without element-level merging.
+- [ ] Unit tests cover: flat merge, deep merge, empty-value replacement, array precedence, and keys unique to each file.
+- [ ] Code handles edge cases: missing files, invalid JSON, deeply nested structures, and mismatched types at the same key.
 
-# Load a JSON file
-data = load_json_file("config.json")
+---
 
-# Save a dictionary as JSON
-save_json_file({"key": "value"}, "output.json")
+## Interview Notes
 
-# Validate that data is a dict
-validate_json_structure(data)
-```
-
-## Running Tests
-
-```bash
-python -m unittest discover -s tests
-```
-
-## License
-
-MIT
+> This issue is the basis for a **live code review session**. The candidate will receive a PR implementing this module and will walk through the code with one of our engineers. We are evaluating:
+>
+> - **Code comprehension** — Can they read and reason about the merge logic?
+> - **Edge case awareness** — Do they spot unhandled scenarios (type mismatches, circular references, large files)?
+> - **Communication** — Can they articulate concerns clearly and constructively?
+> - **Design instinct** — Do they suggest improvements to structure, naming, or API design?

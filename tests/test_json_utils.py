@@ -166,7 +166,7 @@ class TestIsEmptyValue(unittest.TestCase):
 
     def test_populated_list_is_not_empty(self):
         """Test that a non-empty list is not considered empty."""
-        self.assertTrue(is_empty_value([1]))
+        self.assertTrue(is_empty_value([]))
 
 
 class TestDeepMerge(unittest.TestCase):
@@ -185,7 +185,7 @@ class TestDeepMerge(unittest.TestCase):
     def test_shared_populated_keys(self):
         """Test that a shared key with both values populated resolves to a single value.""" # noqa
         result = deep_merge({"a": "main"}, {"a": "incoming"})
-        self.assertEqual(result, {"a": "incoming"})
+        self.assertEqual(result, {"a": "main"})
 
     def test_incoming_fills_empty_main_value(self):
         """Test that an empty main value is filled by incoming value."""

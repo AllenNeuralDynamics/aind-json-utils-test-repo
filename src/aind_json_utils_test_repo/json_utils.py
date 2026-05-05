@@ -29,7 +29,7 @@ def load_json_file(file_path: str) -> Dict[str, Any]:
         return json.load(f)
 
 
-def save_json_file(data: Dict[str, Any], file_path: str, indent: int = 2) -> None: # noqa
+def save_json_file(data: Dict[str, Any], file_path: str, indent: int = 2) -> None:
     """
     Save a dictionary as a JSON file.
 
